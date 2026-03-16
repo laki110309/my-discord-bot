@@ -13,7 +13,7 @@ CHANNELS_CONFIG = {
 }
 
 # 付与するロールID（あなたの設定に合わせて変更してください）
-ROLE_ID_TO_GIVE = 1453303227276857441
+ROLE_ID_TO_GIVE =1464909615316861032
 
 intents = discord.Intents.default()
 intents.message_content = True
