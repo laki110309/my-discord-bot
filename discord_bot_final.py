@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import re
 import os
 
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
@@ -12,7 +11,7 @@ CHANNELS_CONFIG = {
     1482921292725354627: "division申請になります。ここのスクリムではdivision別にスクリムを開催しております。なので、divisionが上がった場合はここに証拠と、「division〇に昇格しましたので、ロール付与をお願いします。」これ以外のメッセージは警告、またはBANになります。"
 }
 
-# 付与するロールID（あなたの設定に合わせて変更してください）
+# 付与するロールID（ここに正しいIDを貼り付けてください！）
 ROLE_ID_TO_GIVE =1464909615316861032
 
 intents = discord.Intents.default()
@@ -32,10 +31,14 @@ class MyBot(commands.Bot):
             return
 
         if message.channel.id in CHANNELS_CONFIG:
-            # 【改良版】XやTwitterのリンクをより柔軟に検知するようにしました
-            if "x.com/" in message.content.lower() or "twitter.com/" in message.content.lower():
+            # 【超改良版】XやTwitterの文字が含まれていれば、どんなリンクでも反応します！
+            content_lower = message.content.lower()
+            if "x.com/" in content_lower or "twitter.com/" in content_lower:
                 try:
+                    # ✅ リアクションを付ける
                     await message.add_reaction('✅')
+                    
+                    # 🎭 ロールを付与する
                     role = message.guild.get_role(ROLE_ID_TO_GIVE)
                     if role:
                         await message.author.add_roles(role)
@@ -43,7 +46,7 @@ class MyBot(commands.Bot):
                 except Exception as e:
                     print(f"Error: {e}")
 
-            # メッセージ追従機能
+            # 🔄 メッセージ追従機能（古いボットメッセージを消して新しく送る）
             last_msg = self.last_messages.get(message.channel.id)
             if last_msg:
                 try:
