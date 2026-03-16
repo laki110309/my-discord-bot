@@ -12,7 +12,8 @@ CHANNELS_CONFIG = {
     1482921292725354627: "division申請になります。ここのスクリムではdivision別にスクリムを開催しております。なので、divisionが上がった場合はここに証拠と、「division〇に昇格しましたので、ロール付与をお願いします。」これ以外のメッセージは警告、またはBANになります。"
 }
 
-ROLE_ID_TO_GIVE = 1453303227276857441
+ROLE_ID_TO_GIVE = 1464909615316861032
+
 
 intents = discord.Intents.default()
 intents.message_content = True
