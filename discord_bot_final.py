@@ -8,12 +8,13 @@ TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 CHANNELS_CONFIG = {
     1464945429706702878: "yuniteの使い方がわかる方は、いつも通りにボットからキーを受け取ってください。わからない方は下の動画を参考にしてください。なにかわからない場合はサポートからお問い合わせください。",
     1452239800223404064: "ルール違反者がいた場合ここにその人をメンションして、証拠を同時に提出してください。 【証拠がない場合対処できないことがありますので、ご協力お願いします。】",
-    1482921292725354627: "division申請になります。ここのスクリムではdivision別にスクリムを開催しております。なので、divisionが上がった場合はここに証拠と、「division〇に昇格しましたので、ロール付与をお願いします。」これ以外のメッセージは警告、またはBANになります。"
-    1483049302287847514: "「＠キーホスト、スクリムを開催してください。」この文章以外はban又は警告の対象となります。",
+    1482921292725354627: "division申請になります。ここのスクリムではdivision別にスクリムを開催しております。なので、divisionが上がった場合はここに証拠と、「division〇に昇格しましたので、ロール付与をお願いします。」これ以外のメッセージは警告、またはBANになります。",
+    1483049302287847514: "@キーホスト　今からスクリムを開催してください以外の文章はban又は警告の対象となります。",
+    1452239529040679053: "カスタムマッチが開ける証拠のスクショを取り、「@キーホストを希望します。」の文を投稿してください。それ以外の文章は、ban又は警告の対象となります。"
 }
 
-# 付与するロールID（ここに正しいIDを貼り付けてください！）
-ROLE_ID_TO_GIVE =1464909615316861032
+# 付与するロールID
+ROLE_ID_TO_GIVE = 1453303227276857441
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -32,22 +33,19 @@ class MyBot(commands.Bot):
             return
 
         if message.channel.id in CHANNELS_CONFIG:
-            # 【超改良版】XやTwitterの文字が含まれていれば、どんなリンクでも反応します！
+            # XやTwitterの文字が含まれていれば反応（プロフィールでも投稿でもOK）
             content_lower = message.content.lower()
             if "x.com/" in content_lower or "twitter.com/" in content_lower:
                 try:
-                    # ✅ リアクションを付ける
                     await message.add_reaction('✅')
-                    
-                    # 🎭 ロールを付与する
                     role = message.guild.get_role(ROLE_ID_TO_GIVE)
                     if role:
                         await message.author.add_roles(role)
                         print(f"Role added to {message.author}")
                 except Exception as e:
-                    print(f"Error: {e}")
+                    print(f"Error adding role: {e}")
 
-            # 🔄 メッセージ追従機能（古いボットメッセージを消して新しく送る）
+            # メッセージ追従機能（古いボットメッセージを消して最新にする）
             last_msg = self.last_messages.get(message.channel.id)
             if last_msg:
                 try:
@@ -58,8 +56,8 @@ class MyBot(commands.Bot):
             content = CHANNELS_CONFIG[message.channel.id]
             try:
                 self.last_messages[message.channel.id] = await message.channel.send(content)
-            except:
-                pass
+            except Exception as e:
+                print(f"Error sending message: {e}")
 
 bot = MyBot()
 bot.run(TOKEN)
